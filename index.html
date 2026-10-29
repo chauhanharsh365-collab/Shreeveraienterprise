@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en-IN">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Estimate and compare Indian income tax under the old and new tax regimes for FY 2026–27. Includes common deductions and a printable tax summary.">
+<meta name="robots" content="index,follow">
+<meta name="theme-color" content="#2459d3">
+<title>Income Tax Calculator FY 2026–27 | Old vs New Regime</title>
+<style>
+:root{--bg:#f3f6fb;--card:#fff;--ink:#172033;--muted:#65718a;--blue:#2459d3;--line:#e1e7f0;--green:#087f5b}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 Inter,Arial,sans-serif}
+header{background:linear-gradient(120deg,#10234d,#2459d3);color:#fff;padding:25px 18px}
+.wrap{max-width:1180px;margin:auto;padding:20px}header .wrap{padding:0 20px}h1{margin:0;font-size:clamp(23px,4vw,32px)}header p{margin:6px 0 0;color:#dbe7ff}
+.toolbar{display:flex;gap:12px;flex-wrap:wrap;justify-content:space-between;align-items:center;margin:18px 0}
+.regimes{display:flex;background:#e4eaf5;padding:4px;border-radius:12px;gap:4px}.regimes button{border:0;padding:11px 18px;border-radius:9px;background:transparent;color:#3d4b64;font-weight:700;cursor:pointer}.regimes button.active{background:var(--blue);color:#fff}
+button.action{background:#fff;border:1px solid var(--line);padding:10px 14px;border-radius:9px;font-weight:700;cursor:pointer;color:var(--ink)}
+.grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:16px}.card{grid-column:span 6;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px;box-shadow:0 5px 20px #1e3a5f0a}.wide{grid-column:span 12}.third{grid-column:span 4}h2{font-size:18px;margin:0 0 16px}h3{font-size:15px;margin:18px 0 10px;color:#30415e}
+.fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.field label{display:block;font-size:12px;color:var(--muted);font-weight:700;margin-bottom:5px}.field input,.field select{width:100%;padding:10px;border:1px solid #ccd6e5;border-radius:8px;background:#fff;color:var(--ink);font:inherit}
+.note{font-size:12px;color:var(--muted);margin-top:8px}.metric{background:#f0f5ff;border-radius:12px;padding:16px}.metric .label{font-size:12px;color:#53627d;font-weight:700}.metric .value{font-size:27px;font-weight:800;color:#1747ad;margin-top:4px}.metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+table{width:100%;border-collapse:collapse;font-size:14px}th,td{padding:10px 8px;border-bottom:1px solid var(--line);text-align:right}th:first-child,td:first-child{text-align:left}th{font-size:12px;color:var(--muted);background:#f7f9fc}tfoot{font-weight:800} .hidden{display:none!important}.tag{display:inline-block;padding:4px 8px;border-radius:99px;background:#e9f8f1;color:var(--green);font-size:12px;font-weight:800}
+.actions{display:flex;gap:8px;flex-wrap:wrap}.warn{background:#fff8e7;padding:12px;border-radius:10px;color:#76520a;font-size:12px;margin-top:12px}
+@media(max-width:760px){.card,.third{grid-column:span 12}.fields{grid-template-columns:1fr}.metrics{grid-template-columns:1fr}.wrap{padding:12px}.regimes button{padding:10px}.metric .value{font-size:24px}}
+@media print{body{background:#fff}.no-print{display:none!important}.card{box-shadow:none;break-inside:avoid}.wrap{max-width:none;padding:0}.grid{gap:8px}}
+
+/* UI/UX refinements */
+:root{--bg:#f4f7fc;--card:#fff;--ink:#17243b;--muted:#65738b;--blue:#2859c5;--line:#dfe6f0;--green:#087f5b;--soft:#edf3ff}
+body{font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;line-height:1.5}
+header{padding:30px 18px;background:radial-gradient(circle at 90% 10%,#527fe4 0,transparent 35%),linear-gradient(125deg,#101f43,#2859c5)}
+header .wrap{max-width:1220px}header p{font-size:14px}
+.wrap{max-width:1220px}.toolbar{position:sticky;top:0;z-index:5;background:rgba(244,247,252,.94);backdrop-filter:blur(12px);padding:10px 0}
+.card{border-radius:18px;padding:22px;box-shadow:0 8px 24px rgba(20,45,90,.055);border-color:#e2e8f2}
+.card h2{display:flex;align-items:center;gap:9px;font-size:17px;letter-spacing:-.2px}
+.field label{font-size:12px;line-height:1.4;min-height:17px}.field input,.field select{min-height:43px;border-color:#cbd6e5;transition:border-color .15s,box-shadow .15s}
+.field input:focus,.field select:focus{outline:none;border-color:#4775db;box-shadow:0 0 0 3px rgba(40,89,197,.12)}
+button{transition:transform .12s,box-shadow .12s}button:active{transform:translateY(1px)}
+button.action{box-shadow:0 2px 5px rgba(18,36,70,.04)}button.action:hover{border-color:#9aafd5;background:#f9fbff}
+.metric{border:1px solid #e1eaff;background:linear-gradient(145deg,#f4f7ff,#edf3ff);min-width:0}.metric .value{font-size:clamp(20px,2.2vw,27px);overflow-wrap:anywhere}
+.regimes{border:1px solid #dbe3f0}.regimes button{min-height:42px}.regimes button.active{box-shadow:0 3px 8px rgba(36,89,211,.22)}
+.warn{border:1px solid #f2dfaa;background:#fff9e9;line-height:1.55}
+.note{line-height:1.55}.wide table{min-width:560px}.wide th,.wide td{padding:11px 10px}
+.print-report{display:none}
+@page{size:A4;margin:14mm}
+@media(max-width:760px){header{padding:23px 12px}.card{padding:16px}.toolbar{position:static}.actions{width:100%}.actions button{flex:1}.regimes{width:100%}.regimes button{flex:1}.grid{gap:12px}}
+@media print{
+  @page{size:A4;margin:13mm}
+  html,body{background:#fff!important;color:#17243b!important;font-size:10pt;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  body>header,main>.toolbar,main>.grid,main>.note{display:none!important}
+  main.wrap{display:block!important;max-width:none!important;margin:0!important;padding:0!important}
+  .print-report{display:block!important;color:#17243b;font-family:Arial,sans-serif}
+  .print-report *{box-sizing:border-box}
+  .pr-head{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:3px solid #2859c5;padding-bottom:12px;margin-bottom:14px;gap:14px}
+  .pr-brand{font-size:21pt;font-weight:800;letter-spacing:-.5px;color:#19366f;margin:0}
+  .pr-subtitle{font-size:10pt;color:#53627a;margin:4px 0 0}
+  .pr-pill{display:inline-block;border:1px solid #cbd8f3;background:#eff4ff;color:#214da8;border-radius:20px;padding:5px 9px;font-size:8.5pt;font-weight:bold;white-space:nowrap}
+  .pr-meta{display:grid;grid-template-columns:1fr 1fr;gap:7px 16px;margin:12px 0 16px;padding:11px 13px;background:#f5f7fb;border:1px solid #e0e6ef;border-radius:7px}
+  .pr-meta div{font-size:9pt}.pr-label{color:#64718a;font-size:8pt;display:block;margin-bottom:2px}.pr-value{font-weight:700;overflow-wrap:anywhere}
+  .pr-section{margin:14px 0 0;break-inside:avoid}.pr-section h2{font-size:11pt;margin:0 0 7px;color:#214da8;border-bottom:1px solid #dce4f1;padding-bottom:5px}
+  .pr-metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0 14px}.pr-metric{border:1px solid #dce5f5;background:#f4f7ff;border-radius:7px;padding:10px}.pr-metric span{display:block;font-size:8pt;color:#5c6b83}.pr-metric strong{display:block;font-size:15pt;margin-top:4px;color:#1d459d;overflow-wrap:anywhere}
+  .pr-table{width:100%;border-collapse:collapse;font-size:8.7pt}.pr-table th{background:#edf2fb;color:#42536f;text-align:left;font-size:8pt}.pr-table th,.pr-table td{border:1px solid #dce3ed;padding:6px 7px;text-align:left;vertical-align:top}.pr-table td.num,.pr-table th.num{text-align:right;white-space:nowrap}.pr-table tr.total td{font-weight:800;background:#f2f6ff}
+  .pr-note{font-size:8pt;line-height:1.45;color:#59677e;margin-top:12px}.pr-footer{margin-top:18px;padding-top:8px;border-top:1px solid #dce3ed;display:flex;justify-content:space-between;gap:10px;color:#66738a;font-size:7.5pt}
+}
+</style></head>
+<body>
+<header><div class="wrap"><h1>Income Tax Calculator</h1><p>Financial Year 2026–27 · Compare Old Regime and New Regime</p></div></header>
+<main class="wrap">
+<section id="printReport" class="print-report" aria-label="Printable income tax calculation report"></section>
+<div class="toolbar no-print"><div class="regimes"><button id="oldBtn" onclick="setRegime('old')">Old Regime</button><button id="newBtn" class="active" onclick="setRegime('new')">New Regime</button></div><div class="actions"><button class="action" onclick="preparePrint()">Print / Save PDF</button><button class="action" onclick="resetForm()">Reset values</button></div></div>
+<div class="grid">
+<section class="card"><h2>1. Personal & Income Details</h2><div class="fields">
+<div class="field"><label for="name">Taxpayer name (optional)</label><input id="name" placeholder="Enter name" oninput="calculate()"></div>
+<div class="field"><label for="residency">Residential status</label><select id="residency" onchange="calculate()"><option value="resident">Resident individual</option><option value="nonresident">Non-resident individual</option></select></div><div class="field"><label for="age">Age category (resident only for Old Regime slabs)</label><select id="age" onchange="calculate()"><option value="below">Below 60 years</option><option value="senior">Resident senior citizen (60–79)</option><option value="super">Resident super senior citizen (80+)</option></select></div>
+<div class="field"><label for="salary">Annual salary income (₹)</label><input id="salary" type="number" min="0" value="1200000" oninput="calculate()"></div>
+<div class="field"><label for="other">Other income (₹)</label><input id="other" type="number" min="0" value="0" oninput="calculate()"></div>
+<div class="field"><label for="interest">Savings / deposit interest (₹)</label><input id="interest" type="number" min="0" value="0" oninput="calculate()"></div>
+<div class="field"><label for="house">Net house property income (+/- ₹)</label><input id="house" type="number" value="0" oninput="calculate()"></div>
+<div class="field"><label for="capital">Capital gains / special-rate income (₹)</label><input id="capital" type="number" min="0" value="0" oninput="calculate()"></div>
+<div class="field"><label for="tds">TDS / advance tax already paid (₹)</label><input id="tds" type="number" min="0" value="0" oninput="calculate()"></div>
+</div><p class="note">This calculator is designed mainly for individual taxpayers with salary and common deductions. Special-rate income may require separate tax treatment.</p></section>
+<section class="card"><h2>2. Tax Regime & Quick Result</h2><div class="metrics">
+<div class="metric"><div class="label">Old Regime Tax</div><div class="value" id="oldTax">₹0</div></div>
+<div class="metric"><div class="label">New Regime Tax</div><div class="value" id="newTax">₹0</div></div>
+<div class="metric"><div class="label">Selected Regime Tax</div><div class="value" id="activeTax">₹0</div></div>
+</div><div style="margin-top:14px"><span class="tag" id="bestTag">Compare both regimes</span></div><p id="regimeInfo" class="note">New regime is selected. Eligible deductions are limited under this regime.</p><div class="warn">Estimates only. Confirm the applicable law, eligibility, exemptions, surcharge, marginal relief and special-rate income before filing a return.</div></section>
+<section class="card wide" id="deductionCard"><h2>3. Old Regime — Deductions & Exemptions</h2><p class="note">Enter only eligible amounts actually paid or available under the applicable rules. Caps are applied where shown.</p>
+<h3>Salary exemptions & deductions</h3><div class="fields">
+<div class="field"><label for="standard">Standard deduction (₹; max ₹50,000)</label><input id="standard" type="number" min="0" max="50000" value="50000" oninput="calculate()"></div>
+<div class="field"><label for="hra">Eligible HRA exemption (₹)</label><input id="hra" type="number" min="0" value="0" oninput="calculate()"></div>
+<div class="field"><label for="lta">Eligible LTA exemption (₹)</label><input id="lta" type="number" min="0" value="0" oninput="calculate()"></div>
+<div class="field"><label for="otherExempt">Other eligible salary exemptions (₹)</label><input id="otherExempt" type="number" min="0" value="0" oninput="calculate()"></div>
+</div>
+<h3>Chapter VI-A deductions</h3><div class="fields">
+<div class="field"><label for="d80c">Section 80C (EPF, PPF, LIC, ELSS etc.; max ₹1,50,000)</label><input id="d80c" type="number" min="0" value="0" oninput="calculate()"></div>
+<div class="field"><label for="d80ccd1b">Section 80CCD(1B) NPS (max ₹50,000)</label><input id="d80ccd1b" type="number" min="0" value="0" oninput="calculate()"></div>
+<div class="field"><label for="d80d">Section 80D health insurance</label><input id="d80d" type="number" min="0" value="0" oninput="calculate()"></div>
+<div class="field"><label for="d80dd">Section 80DD eligible dependent disability</label><input id="d80dd" type="number" min="0" value="0" oninput="calculate()"></div>
+<div class="field"><label for="d80ddb">Section 80DDB specified disease</label><input id="d80ddb" type="number" min="0" value="0" oninput="calculate()"></div>
+<div class="field"><label for="d80e">Section 80E education loan interest</label><input id="d80e" type="number" min="0" value="0" oninput="calculate()"></div>
+<div class="field"><label for="d80g">Section 80G eligible donations</label><input id="d80g" type="number" min="0" value="0" oninput="calculate()"></div>
+<div class="field"><label for="d80tta">Section 80TTA savings interest (max ₹10,000)</label><input id="d80tta" type="number" min="0" value="0" oninput="calculate()"></div>
+<div class="field"><label for="d80ttb">Section 80TTB senior citizen interest (max ₹50,000)</label><input id="d80ttb" type="number" min="0" value="0" oninput="calculate()"></div>
+<div class="field"><label for="d80u">Section 80U eligible disability</label><input id="d80u" type="number" min="0" value="0" oninput="calculate()"></div>
+<div class="field"><label for="otherDed">Other eligible deductions (₹)</label><input id="otherDed" type="number" min="0" value="0" oninput="calculate()"></div>
+</div><p class="note">Some deductions have conditions, sub-limits, gross-total-income limits or cannot be claimed together. Verify eligibility before entering them. This form provides inputs for common deductions; it does not validate every statutory condition.</p></section>
+<section class="card wide"><h2>4. Calculation Summary</h2><div class="metrics">
+<div class="metric"><div class="label">Gross Total Income (approx.)</div><div class="value" id="grossIncome">₹0</div></div>
+<div class="metric"><div class="label">Eligible deductions entered</div><div class="value" id="dedTotal">₹0</div></div>
+<div class="metric"><div class="label">Selected taxable income</div><div class="value" id="taxable">₹0</div></div>
+</div><h3>Regime comparison</h3><div style="overflow-x:auto"><table><thead><tr><th>Particulars</th><th>Old Regime</th><th>New Regime</th></tr></thead><tbody>
+<tr><td>Taxable income (approx.)</td><td id="oldIncome">₹0</td><td id="newIncome">₹0</td></tr>
+<tr><td>Income tax before rebate</td><td id="oldBase">₹0</td><td id="newBase">₹0</td></tr>
+<tr><td>Section 87A rebate (estimated)</td><td id="oldRebate">₹0</td><td id="newRebate">₹0</td></tr>
+<tr><td>Surcharge (estimated)</td><td id="surcharge">₹0</td><td id="surchargeNew">₹0</td></tr>
+<tr><td>Health & Education Cess (4%)</td><td id="oldCess">₹0</td><td id="newCess">₹0</td></tr>
+<tr><td><b>Total estimated tax</b></td><td id="oldFinal">₹0</td><td id="newFinal">₹0</td></tr>
+<tr><td>TDS / advance tax paid</td><td id="oldPaid">₹0</td><td id="newPaid">₹0</td></tr>
+<tr><td><b>Balance tax / (refund estimate)</b></td><td id="oldBalance">₹0</td><td id="newBalance">₹0</td></tr>
+</tbody></table></div><p class="note">For Old Regime slab rates, age category is used for resident senior citizens. Non-residents are taxed using the below-60 slab. Final tax may differ where capital gains, dividends, special incomes, losses, surcharge marginal relief or other adjustments apply.</p></section>
+</div><p class="note footer-note" style="text-align:center;margin:22px 0">Income Tax Calculator · FY 2026–27 · Local browser calculation; this page does not upload your entered data.</p>
+</main>
+<script>
+let regime='new';
+const $=id=>document.getElementById(id);
+const n=id=>Number($(id).value)||0;
+const fmt=x=>'₹'+Math.round(Math.max(0,x)).toLocaleString('en-IN');
+function setRegime(r){regime=r;$('oldBtn').classList.toggle('active',r==='old');$('newBtn').classList.toggle('active',r==='new');$('deductionCard').classList.toggle('hidden',r==='new');$('regimeInfo').textContent=r==='new'?'New regime selected. Most Chapter VI-A deductions and HRA/LTA exemptions are not available.':'Old regime selected. Enter eligible exemptions and deductions below.';calculate();}
+function valCapped(id,cap){return Math.min(Math.max(0,n(id)),cap)}
+function oldSlabTax(income){
+ const age=$('age').value; let slabs;
+ if(age==='super' && $('residency').value==='resident') slabs=[[500000,0],[1000000,.2],[Infinity,.3]];
+ else if(age==='senior' && $('residency').value==='resident') slabs=[[300000,0],[500000,.05],[1000000,.2],[Infinity,.3]];
+ else slabs=[[250000,0],[500000,.05],[1000000,.2],[Infinity,.3]];
+ let prev=0,tax=0;
+ for(const [limit,rate] of slabs){const chunk=Math.max(0,Math.min(income,limit)-prev);tax+=chunk*rate;prev=limit;if(income<=limit)break;}
+ return tax;
+}
+function newSlabTax(income){let slabs=[[400000,0],[800000,.05],[1200000,.10],[1600000,.15],[2000000,.20],[2400000,.25],[Infinity,.30]],prev=0,tax=0;for(const [limit,rate] of slabs){tax+=Math.max(0,Math.min(income,limit)-prev)*rate;prev=limit;if(income<=limit)break;}return tax;}
+function surchargeFor(taxable,tax,old){let rate=0;if(taxable>50000000)rate=old?.37:.25;else if(taxable>20000000)rate=.25;else if(taxable>10000000)rate=.15;else if(taxable>5000000)rate=.10;return tax*rate;}
+function calculate(){
+ const salary=Math.max(0,n('salary')), other=Math.max(0,n('other')), interest=Math.max(0,n('interest')), house=n('house'), capital=Math.max(0,n('capital'));
+ const gross=Math.max(0,salary+other+interest+house+capital);
+ const std=valCapped('standard',50000), hra=Math.max(0,n('hra')),lta=Math.max(0,n('lta')),exempt=Math.max(0,n('otherExempt'));
+ const d80c=valCapped('d80c',150000),dNps=valCapped('d80ccd1b',50000),d80d=Math.max(0,n('d80d')),d80dd=Math.max(0,n('d80dd')),d80ddb=Math.max(0,n('d80ddb')),d80e=Math.max(0,n('d80e')),d80g=Math.max(0,n('d80g')),d80tta=valCapped('d80tta',10000),d80ttb=valCapped('d80ttb',50000),d80u=Math.max(0,n('d80u')),otherDed=Math.max(0,n('otherDed'));
+ const oldDed=std+hra+lta+exempt+d80c+dNps+d80d+d80dd+d80ddb+d80e+d80g+($('age').value==='senior'||$('age').value==='super'?d80ttb:d80tta)+d80u+otherDed;
+ const oldIncome=Math.max(0,gross-oldDed);
+ // New regime salary standard deduction only; eligible employer NPS is not separately modelled in this general-purpose version.
+ const newStd=Math.min(75000,salary),newIncome=Math.max(0,gross-newStd);
+ let oldBase=oldSlabTax(oldIncome),newBase=newSlabTax(newIncome);
+ let oldRebate=($('residency').value==='resident'&&oldIncome<=500000)?Math.min(12500,oldBase):0;
+ // New regime Section 87A rebate applies to eligible resident individuals; marginal relief near ₹12 lakh is approximated.
+ let newRebate=0;if($('residency').value==='resident'){if(newIncome<=1200000)newRebate=Math.min(60000,newBase);else if(newIncome<=1270588)newRebate=Math.max(0,newBase-(newIncome-1200000));}
+ oldBase=Math.max(0,oldBase-oldRebate);newBase=Math.max(0,newBase-newRebate);
+ let oldSurcharge=surchargeFor(oldIncome,oldBase,true),newSurcharge=surchargeFor(newIncome,newBase,false);
+ // Marginal relief for surcharge is not implemented; this is an estimate for high-income cases.
+ const oldCess=(oldBase+oldSurcharge)*.04,newCess=(newBase+newSurcharge)*.04;
+ const oldFinal=oldBase+oldSurcharge+oldCess,newFinal=newBase+newSurcharge+newCess,paid=Math.max(0,n('tds'));
+ $('grossIncome').textContent=fmt(gross);$('dedTotal').textContent=fmt(regime==='old'?oldDed:newStd);$('taxable').textContent=fmt(regime==='old'?oldIncome:newIncome);
+ $('oldIncome').textContent=fmt(oldIncome);$('newIncome').textContent=fmt(newIncome);
+ $('oldBase').textContent=fmt(oldSlabTax(oldIncome));$('newBase').textContent=fmt(newSlabTax(newIncome));
+ $('oldRebate').textContent=fmt(oldRebate);$('newRebate').textContent=fmt(newRebate);
+ $('surcharge').textContent=fmt(oldSurcharge);$('surchargeNew').textContent=fmt(newSurcharge);$('oldCess').textContent=fmt(oldCess);$('newCess').textContent=fmt(newCess);
+ $('oldFinal').textContent=fmt(oldFinal);$('newFinal').textContent=fmt(newFinal);$('oldPaid').textContent=fmt(paid);$('newPaid').textContent=fmt(paid);
+ $('oldBalance').textContent=(oldFinal-paid<0?'(Refund estimate) ':'')+fmt(Math.abs(oldFinal-paid));$('newBalance').textContent=(newFinal-paid<0?'(Refund estimate) ':'')+fmt(Math.abs(newFinal-paid));
+ $('oldTax').textContent=fmt(oldFinal);$('newTax').textContent=fmt(newFinal);const active=regime==='old'?oldFinal:newFinal;$('activeTax').textContent=fmt(active);
+ $('bestTag').textContent=Math.abs(oldFinal-newFinal)<1?'Both regimes have similar estimated tax':(oldFinal<newFinal?'Old Regime appears lower by '+fmt(newFinal-oldFinal):'New Regime appears lower by '+fmt(oldFinal-newFinal));
+ renderPrintReport({salary,other,interest,house,capital,gross,std,hra,lta,exempt,d80c,dNps,d80d,d80dd,d80ddb,d80e,d80g,d80tta,d80ttb,d80u,otherDed,oldDed,newStd,oldIncome,newIncome,oldBase:oldSlabTax(oldIncome),newBase:newSlabTax(newIncome),oldRebate,newRebate,oldSurcharge,newSurcharge,oldCess,newCess,oldFinal,newFinal,paid,oldBalance:oldFinal-paid,newBalance:newFinal-paid});
+}
+
+function safeText(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function rupees(v){return '₹'+Math.round(Number(v)||0).toLocaleString('en-IN');}
+function reportRow(label,value){return `<tr><td>${safeText(label)}</td><td class="num">${rupees(value)}</td></tr>`;}
+function renderPrintReport(d){
+ const taxpayer=safeText($('name').value.trim()||'Not provided');
+ const ageText=$('age').selectedOptions[0]?.textContent||'Not specified';
+ const selected=regime==='old'?'Old Regime':'New Regime';
+ const activeTax=regime==='old'?d.oldFinal:d.newFinal;
+ const activeIncome=regime==='old'?d.oldIncome:d.newIncome;
+ const activeDed=regime==='old'?d.oldDed:d.newStd;
+ const balance=regime==='old'?d.oldBalance:d.newBalance;
+ const balanceText=balance<0?'Estimated refund: '+rupees(Math.abs(balance)):'Estimated balance tax: '+rupees(balance);
+ const deductionRows=[['Standard deduction (Old Regime)',d.std],['HRA exemption',d.hra],['LTA exemption',d.lta],['Other salary exemptions',d.exempt],['Section 80C',d.d80c],['Section 80CCD(1B) NPS',d.dNps],['Section 80D',d.d80d],['Section 80DD',d.d80dd],['Section 80DDB',d.d80ddb],['Section 80E',d.d80e],['Section 80G',d.d80g],['Section 80TTA',d.d80tta],['Section 80TTB',d.d80ttb],['Section 80U',d.d80u],['Other deductions',d.otherDed]].filter(x=>Number(x[1])>0);
+ const incomeRows=[['Annual salary income',d.salary],['Other income',d.other],['Savings / deposit interest',d.interest],['Net house property income',d.house],['Capital gains / special-rate income (entered)',d.capital]];
+ const comparisonRows=[['Taxable income',d.oldIncome,d.newIncome],['Income tax before rebate',d.oldBase,d.newBase],['Section 87A rebate (estimated)',d.oldRebate,d.newRebate],['Surcharge (estimated)',d.oldSurcharge,d.newSurcharge],['Health & Education Cess (4%)',d.oldCess,d.newCess],['Total estimated tax',d.oldFinal,d.newFinal],['TDS / advance tax paid',d.paid,d.paid],['Balance tax / (refund estimate)',d.oldBalance,d.newBalance]];
+ $('printReport').innerHTML=`<div class="pr-head"><div><h1 class="pr-brand">Income Tax Calculation</h1><p class="pr-subtitle">Financial Year 2026–27 · Assessment Year 2027–28</p></div><div class="pr-pill">${selected} Selected</div></div>
+ <div class="pr-meta"><div><span class="pr-label">Taxpayer name</span><span class="pr-value">${taxpayer}</span></div><div><span class="pr-label">Age category</span><span class="pr-value">${safeText(ageText)}</span></div><div><span class="pr-label">Report generated</span><span class="pr-value">${new Date().toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'})}</span></div><div><span class="pr-label">Calculation type</span><span class="pr-value">Indicative estimate</span></div></div>
+ <div class="pr-metrics"><div class="pr-metric"><span>Estimated tax (${selected})</span><strong>${rupees(activeTax)}</strong></div><div class="pr-metric"><span>Taxable income (${selected})</span><strong>${rupees(activeIncome)}</strong></div><div class="pr-metric"><span>${balance<0?'Estimated refund':'Estimated balance tax'}</span><strong>${rupees(Math.abs(balance))}</strong></div></div>
+ <section class="pr-section"><h2>1. Income details</h2><table class="pr-table"><thead><tr><th>Particulars</th><th class="num">Amount</th></tr></thead><tbody>${incomeRows.map(r=>reportRow(r[0],r[1])).join('')}${reportRow('Gross total income (approx.)',d.gross)}</tbody></table></section>
+ <section class="pr-section"><h2>2. Deductions and exemptions entered</h2><table class="pr-table"><thead><tr><th>Particulars</th><th class="num">Amount</th></tr></thead><tbody>${deductionRows.length?deductionRows.map(r=>reportRow(r[0],r[1])).join(''):'<tr><td colspan="2">No Old Regime deductions or exemptions entered.</td></tr>'}${reportRow('Total Old Regime deductions entered',d.oldDed)}${reportRow('New Regime standard deduction applied (salary, capped at ₹75,000)',d.newStd)}</tbody></table></section>
+ <section class="pr-section"><h2>3. Old Regime vs New Regime comparison</h2><table class="pr-table"><thead><tr><th>Particulars</th><th class="num">Old Regime</th><th class="num">New Regime</th></tr></thead><tbody>${comparisonRows.map(r=>`<tr class="${r[0].startsWith('Total estimated')||r[0].startsWith('Balance tax')?'total':''}"><td>${safeText(r[0])}</td><td class="num">${r[0].includes('Balance tax')?(r[1]<0?'Refund ': 'Balance ')+rupees(Math.abs(r[1])):rupees(r[1])}</td><td class="num">${r[0].includes('Balance tax')?(r[2]<0?'Refund ': 'Balance ')+rupees(Math.abs(r[2])):rupees(r[2])}</td></tr>`).join('')}</tbody></table></section>
+ <p class="pr-note"><b>Important:</b> This report is an indicative estimate and is not a tax filing, assessment, or professional tax opinion. Tax rules, eligibility, rebate conditions, surcharge/marginal relief and special-rate income treatment may change the final liability. Capital gains and other special-rate income are not separately tax-calculated by this basic calculator. Verify the applicable law and figures before filing your return.</p>
+ <div class="pr-footer"><span>Generated locally in your browser · No data uploaded by this page</span><span>FY 2026–27 / AY 2027–28</span></div>`;
+}
+function preparePrint(){calculate();window.print();}
+
+function resetForm(){document.querySelectorAll('input').forEach(el=>{if(el.type==='number')el.value=el.id==='salary'?'1200000':'0';else el.value='';});$('standard').value=50000;$('age').value='below';$('residency').value='resident';$('tds').value=0;setRegime('new');}
+setRegime('new');
+</script></body></html>
